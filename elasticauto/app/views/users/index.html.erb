@@ -1,0 +1,48 @@
+<div class="container">
+    <input type="text" class="form-control" id="search_input" placeholder="Search" />
+    <input type="hidden" id="search_input-id">
+</div>
+
+
+
+
+<!-- AUTOCOMPLETE SCRIPT -->
+<script type="text/javascript">
+ $(function() {
+
+    $('#search_input').autocomplete({
+            source: function( request, response ) {
+                $.ajax({
+                    url: "http://localhost:3000/users/search",
+                    dataType: "json",
+                    data: {
+                      username: request.term
+                    },
+                    success: function( data ) {
+                      response(data)
+                      data.forEach(function(obj) {  
+                        console.log("OUTPUT: ", obj["username"] + " - Avatar: " + obj["image_url"]);
+                      });
+                    }
+                });
+            },
+            focus: function( event, ui ) {
+                $( "#search_input" ).val( ui.item.username );
+                return false;
+            },
+            select: function( event, ui ) {
+                $( "#search_input" ).val( ui.item.username );
+                return false;
+            },
+    }).autocomplete( "instance" )._renderItem = function( ul, item ) {
+        return $( "<li>" )
+            .append("<img height='50' width='50' src=" + item.image_url + " />")
+            .append( "<a>" + item.username + "</a>" )
+            .appendTo( ul );
+    };
+
+});
+</script>
+
+
+<!-- AUTOCOMPLETE SCRIPT -->
